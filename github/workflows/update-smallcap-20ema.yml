@@ -1,0 +1,95 @@
+name: Update Smallcap 20 EMA List
+
+on:
+  workflow_dispatch:
+    inputs:
+      drive_folder_url:
+        description: "Public Google Drive folder URL containing the Chartink CSV"
+        required: true
+        default: "https://drive.google.com/drive/folders/1iw7BIoQdfcW3-jHRcsAVRzZftGDNDcDa?usp=sharing"
+      csv_filename:
+        description: "Chartink CSV filename"
+        required: true
+        default: "Backtest HVY @finallynitin.csv"
+
+permissions:
+  contents: write
+
+jobs:
+  update-csv:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Download Chartink CSV from Google Drive
+        env:
+          DRIVE_FOLDER_URL: ${{ github.event.inputs.drive_folder_url }}
+          CSV_FILENAME: ${{ github.event.inputs.csv_filename }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import gdown
+
+          folder_url = os.environ["DRIVE_FOLDER_URL"]
+          csv_filename = os.environ["CSV_FILENAME"]
+
+          gdown.download_folder(
+              url=folder_url,
+              output="drive_files",
+              quiet=False,
+              use_cookies=False,
+          )
+
+          matches = list(Path("drive_files").rglob(csv_filename))
+          if not matches:
+              raise FileNotFoundError(
+                  f"Could not find '{csv_filename}' in the downloaded Drive folder."
+              )
+
+          csv_path = str(matches[0])
+          Path("chartink_csv_path.txt").write_text(csv_path)
+          print(f"Found Chartink CSV: {csv_path}")
+          PY
+
+      - name: Run Smallcap 20 EMA analysis
+        run: |
+          CSV_PATH=$(cat chartink_csv_path.txt)
+
+          python chartink_smallcap_20ema_tradingview.py \
+            --input "$CSV_PATH" \
+            --output smallcap_stocks_near_20ema.csv
+
+      - name: Commit updated CSV
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add smallcap_stocks_near_20ema.csv
+
+          if git diff --staged --quiet; then
+            echo "No CSV changes to commit."
+          else
+            git commit -m "Update smallcap stocks near 20 EMA"
+            git push
+          fi
+
+      - name: Upload CSV artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: smallcap-stocks-near-20ema
+          path: smallcap_stocks_near_20ema.csv
+          if-no-files-found: error
+          retention-days: 30
