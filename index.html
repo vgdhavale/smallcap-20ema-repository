@@ -12,11 +12,12 @@
     h1 { margin: 0; font-size: 26px; }
     h2 { margin-top: 0; }
     .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
-    .button { display: inline-block; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; }
-    .download { background: #0b3d62; color: white; }
+    .button { display: inline-block; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; cursor: pointer; font-size: 14px; }
+    .download { background: #0b3d62; color: white; border: 1px solid #0b3d62; }
     .refresh { background: #e7eef4; color: #0b3d62; border: 1px solid #b8c9d6; }
-    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-    th, td { padding: 10px; border-bottom: 1px solid #e2e6ea; text-align: left; }
+    .table-wrapper { overflow-x: auto; margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; border-bottom: 1px solid #e2e6ea; text-align: left; white-space: nowrap; }
     th { background: #eef3f7; }
     .symbol { font-weight: bold; }
     .status { color: #666; }
@@ -41,35 +42,41 @@
         <button class="button refresh" onclick="loadStocks()">Refresh list</button>
       </div>
 
-      <table id="stockTable">
-        <thead>
-          <tr>
-            <th>Stock name</th>
-            <th>Chartink date</th>
-            <th>Close</th>
-            <th>20 EMA</th>
-            <th>Distance</th>
-            <th>TradingView</th>
-          </tr>
-        </thead>
-        <tbody id="stockRows">
-          <tr><td colspan="6">Waiting for data...</td></tr>
-        </tbody>
-      </table>
+      <div class="table-wrapper">
+        <table id="stockTable">
+          <thead>
+            <tr>
+              <th>Stock name</th>
+              <th>Chartink date</th>
+              <th>Close</th>
+              <th>20 EMA</th>
+              <th>Distance</th>
+              <th>TradingView</th>
+            </tr>
+          </thead>
+          <tbody id="stockRows">
+            <tr><td colspan="6">Waiting for data...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </main>
 
   <script>
     const CSV_FILE = "smallcap_stocks_near_20ema.csv";
 
+    function splitCSVLine(line) {
+      return line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.replace(/^"|"$/g, "").trim());
+    }
+
     function parseCSV(text) {
       const lines = text.trim().split(/\r?\n/);
       if (lines.length < 2) return [];
 
-      const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g, "").trim());
+      const headers = splitCSVLine(lines[0]);
 
       return lines.slice(1).map(line => {
-        const values = line.split(",").map(v => v.replace(/^"|"$/g, "").trim());
+        const values = splitCSVLine(line);
         const row = {};
         headers.forEach((header, index) => { row[header] = values[index] || ""; });
         return row;
@@ -100,13 +107,16 @@
         status.textContent = `Showing ${rows.length} stock name(s).`;
 
         rows.forEach(row => {
+          const rawDist = (row["Distance_from_20EMA_%"] || "").replace("%", "");
+          const distDisplay = rawDist ? `${rawDist}%` : "";
+
           const tr = document.createElement("tr");
           tr.innerHTML = `
             <td class="symbol">${row.Symbol || ""}</td>
             <td>${row.Chartink_Last_Date || ""}</td>
             <td>${row.Close || ""}</td>
             <td>${row.EMA_20 || ""}</td>
-            <td>${row.Distance_from_20EMA_% || ""}%</td>
+            <td>${distDisplay}</td>
             <td><a href="${row.TradingView_Link || "#"}" target="_blank" rel="noopener">Open</a></td>
           `;
           tbody.appendChild(tr);
