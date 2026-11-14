@@ -1,0 +1,4 @@
+gdown
+yfinance
+openpyxl
+pandas

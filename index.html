@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smallcap Stocks Near 20 EMA</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f5f7fa; color: #222; }
+    header { background: #0b3d62; color: white; padding: 28px 20px; text-align: center; }
+    main { max-width: 1000px; margin: 30px auto; padding: 0 16px 50px; }
+    .card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; }
+    h1 { margin: 0; font-size: 26px; }
+    h2 { margin-top: 0; }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+    .button { display: inline-block; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; }
+    .download { background: #0b3d62; color: white; }
+    .refresh { background: #e7eef4; color: #0b3d62; border: 1px solid #b8c9d6; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { padding: 10px; border-bottom: 1px solid #e2e6ea; text-align: left; }
+    th { background: #eef3f7; }
+    .symbol { font-weight: bold; }
+    .status { color: #666; }
+    a { color: #0b3d62; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Smallcap Stocks Near 20 EMA</h1>
+    <p>Latest Chartink smallcap candidates within 2% of their 20-day EMA</p>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>Stock names</h2>
+      <p class="status" id="status">Loading stock names...</p>
+
+      <div class="actions">
+        <a class="button download" href="smallcap_stocks_near_20ema.csv" download>
+          Download CSV
+        </a>
+        <button class="button refresh" onclick="loadStocks()">Refresh list</button>
+      </div>
+
+      <table id="stockTable">
+        <thead>
+          <tr>
+            <th>Stock name</th>
+            <th>Chartink date</th>
+            <th>Close</th>
+            <th>20 EMA</th>
+            <th>Distance</th>
+            <th>TradingView</th>
+          </tr>
+        </thead>
+        <tbody id="stockRows">
+          <tr><td colspan="6">Waiting for data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    const CSV_FILE = "smallcap_stocks_near_20ema.csv";
+
+    function parseCSV(text) {
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length < 2) return [];
+
+      const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g, "").trim());
+
+      return lines.slice(1).map(line => {
+        const values = line.split(",").map(v => v.replace(/^"|"$/g, "").trim());
+        const row = {};
+        headers.forEach((header, index) => { row[header] = values[index] || ""; });
+        return row;
+      });
+    }
+
+    async function loadStocks() {
+      const status = document.getElementById("status");
+      const tbody = document.getElementById("stockRows");
+
+      status.textContent = "Loading stock names...";
+      tbody.innerHTML = "";
+
+      try {
+        const response = await fetch(CSV_FILE + "?t=" + Date.now());
+
+        if (!response.ok) throw new Error("CSV file is not available yet.");
+
+        const csvText = await response.text();
+        const rows = parseCSV(csvText);
+
+        if (rows.length === 0) {
+          status.textContent = "No smallcap stocks are currently near their 20 EMA.";
+          tbody.innerHTML = '<tr><td colspan="6">No matching stocks found.</td></tr>';
+          return;
+        }
+
+        status.textContent = `Showing ${rows.length} stock name(s).`;
+
+        rows.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td class="symbol">${row.Symbol || ""}</td>
+            <td>${row.Chartink_Last_Date || ""}</td>
+            <td>${row.Close || ""}</td>
+            <td>${row.EMA_20 || ""}</td>
+            <td>${row.Distance_from_20EMA_% || ""}%</td>
+            <td><a href="${row.TradingView_Link || "#"}" target="_blank" rel="noopener">Open</a></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        status.textContent = "Could not load the CSV. Run the GitHub Action first, then refresh this page.";
+        tbody.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
+      }
+    }
+
+    loadStocks();
+  </script>
+</body>
+</html>
