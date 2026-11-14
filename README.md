@@ -1,0 +1,1 @@
+# smallcap-20ema-repository
