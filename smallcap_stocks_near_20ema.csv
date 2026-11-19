@@ -1,10 +1,12 @@
 ﻿Symbol,Chartink_Last_Date,Price_Date,Marketcap,Sector,Close,EMA_20,Distance_from_20EMA_%,Absolute_Distance_%,TradingView_Link
-AYMSYNTEX,2026-10-30,2026-11-13,Smallcap,Textiles,262.53,263.32,-0.3,0.3,https://in.tradingview.com/symbols/NSE-AYMSYNTEX
-KPEL,2026-11-09,2026-11-13,Smallcap,Realty,186.5,185.61,0.48,0.48,https://in.tradingview.com/symbols/NSE-KPEL
-BRIGHOTEL,2026-10-27,2026-11-13,Smallcap,Services,54.71,54.4,0.58,0.58,https://in.tradingview.com/symbols/NSE-BRIGHOTEL
-IIFLCAPS,2026-11-13,2026-11-16,Smallcap,Financials,352.1,348.63,0.99,0.99,https://in.tradingview.com/symbols/NSE-IIFLCAPS
-JISLJALEQS,2026-10-30,2026-11-16,Smallcap,Plastic products,26.99,27.3,-1.12,1.12,https://in.tradingview.com/symbols/NSE-JISLJALEQS
-PLATIND,2026-10-19,2026-11-13,Smallcap,Chemicals,219.95,216.75,1.48,1.48,https://in.tradingview.com/symbols/NSE-PLATIND
-EUROPRATIK,2026-10-19,2026-11-13,Smallcap,Building Materials,188.95,185.49,1.87,1.87,https://in.tradingview.com/symbols/NSE-EUROPRATIK
-RANEHOLDIN,2026-11-12,2026-11-16,Smallcap,Financials,1555.1,1525.31,1.95,1.95,https://in.tradingview.com/symbols/NSE-RANEHOLDIN
-JINDALPOLY,2026-10-23,2026-11-13,Smallcap,Textiles,701.0,687.26,2.0,2.0,https://in.tradingview.com/symbols/NSE-JINDALPOLY
+RANEHOLDIN,2026-11-12,2026-11-19,Smallcap,Financials,1526.8,1526.63,0.01,0.01,https://in.tradingview.com/symbols/NSE-RANEHOLDIN
+FUSION,2026-11-03,2026-11-19,Smallcap,Financials,156.75,157.12,-0.24,0.24,https://in.tradingview.com/symbols/NSE-FUSION
+MARKOLINES,2026-11-02,2026-11-19,Smallcap,Realty,169.15,168.73,0.25,0.25,https://in.tradingview.com/symbols/NSE-MARKOLINES
+DCMSRIND,2026-10-21,2026-11-19,Smallcap,FMCG,55.78,55.92,-0.25,0.25,https://in.tradingview.com/symbols/NSE-DCMSRIND
+BALMLAWRIE,2026-11-11,2026-11-19,Smallcap,Miscellaneous,164.33,164.85,-0.32,0.32,https://in.tradingview.com/symbols/NSE-BALMLAWRIE
+MTNL,2026-11-06,2026-11-19,Smallcap,Telecom,24.86,24.73,0.53,0.53,https://in.tradingview.com/symbols/NSE-MTNL
+MENONBE,2026-11-02,2026-11-19,Smallcap,Auto,323.1,320.86,0.7,0.7,https://in.tradingview.com/symbols/NSE-MENONBE
+BRIGHOTEL,2026-10-27,2026-11-19,Smallcap,Services,54.0,54.44,-0.81,0.81,https://in.tradingview.com/symbols/NSE-BRIGHOTEL
+BBL,2026-10-27,2026-11-19,Smallcap,Industrials,2569.0,2532.97,1.42,1.42,https://in.tradingview.com/symbols/NSE-BBL
+IIFLCAPS,2026-11-13,2026-11-19,Smallcap,Financials,343.3,348.35,-1.45,1.45,https://in.tradingview.com/symbols/NSE-IIFLCAPS
+BFUTILITIE,2026-11-13,2026-11-19,Smallcap,Power & Utilities,469.1,461.33,1.68,1.68,https://in.tradingview.com/symbols/NSE-BFUTILITIE
